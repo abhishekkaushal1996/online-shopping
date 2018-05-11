@@ -1,60 +1,96 @@
 package com.mabhi.onlineshopping.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.mabhi.shoppingbackend.dao.CategoryDAO;
+import com.mabhi.shoppingbackend.dto.Category;
 
 @Controller
 public class PageController {
 
-	
-	@RequestMapping(value= {"/","/index","/home"})
+	@Autowired
+	private CategoryDAO categoryDAO;
+
+	@RequestMapping(value = { "/", "/index", "/home" })
 	public ModelAndView index() {
-		
-		ModelAndView mv=new ModelAndView("page");
-		mv.addObject("title","home");
-		mv.addObject("userClickHome",true);
+
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title", "home");
+		mv.addObject("userClickHome", true);
+		// passing the list of categories
+		mv.addObject("categories", categoryDAO.list());
 		return mv;
 	}
-	
-	@RequestMapping(value= "/about")
+
+	@RequestMapping(value = "/about")
 	public ModelAndView about() {
-		
-		ModelAndView mv=new ModelAndView("page");
-		mv.addObject("title","About Us");
-		mv.addObject("userClickAbout",true);
+
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title", "About Us");
+		mv.addObject("userClickAbout", true);
 		return mv;
 	}
-	
-	@RequestMapping(value= "/contact")
+
+	@RequestMapping(value = "/contact")
 	public ModelAndView contact() {
-		
-		ModelAndView mv=new ModelAndView("page");
-		mv.addObject("title","Contact Us");
-		mv.addObject("userClickContact",true);
+
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title", "Contact Us");
+		mv.addObject("userClickContact", true);
 		return mv;
 	}
+
 	/*
-	@RequestMapping(value="/test")
-	//public ModelAndView test(@RequestParam("greeting")String greeting) {    // it should be present
-	public ModelAndView test(@RequestParam(value="greeting", required=false)String greeting) {
-		if(greeting==null) {
-			greeting="hello there";
-		}
-		ModelAndView mv=new ModelAndView("page");
-		mv.addObject("greeting",greeting);
+	 * To show all products
+	 */
+
+	@RequestMapping(value = "show/all/products")
+	public ModelAndView showAllProducts() {
+
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title", "All Products");
+		mv.addObject("userClickAllProducts", true);
+		// passing the list of categories
+		mv.addObject("categories", categoryDAO.list());
 		return mv;
 	}
-	
-	
-	@RequestMapping(value="/test/{greeting}")
-	//public ModelAndView test(@RequestParam("greeting")String greeting) {    // it should be present
-	public ModelAndView test(@PathVariable(value="greeting", required=false)String greeting) {
-		if(greeting==null) {
-			greeting="hello there";
-		}
-		ModelAndView mv=new ModelAndView("page");
-		mv.addObject("greeting",greeting);
+
+	@RequestMapping(value = "show/category/{id}/products")
+	public ModelAndView showCategoryProducts(@PathVariable("id") int id) {
+
+		ModelAndView mv = new ModelAndView("page");
+		Category category = null;
+
+		category = categoryDAO.get(id);
+		mv.addObject("title", category.getName());
+		mv.addObject("userClickCategoryProducts", true);
+		// passing the list of categories
+
+		// to fetc single category
+
+		mv.addObject("categories", categoryDAO.list());
+		mv.addObject("category", category);
 		return mv;
-	}*/
+	}
+
+	/*
+	 * @RequestMapping(value="/test") //public ModelAndView
+	 * test(@RequestParam("greeting")String greeting) { // it should be present
+	 * public ModelAndView test(@RequestParam(value="greeting",
+	 * required=false)String greeting) { if(greeting==null) {
+	 * greeting="hello there"; } ModelAndView mv=new ModelAndView("page");
+	 * mv.addObject("greeting",greeting); return mv; }
+	 * 
+	 * 
+	 * @RequestMapping(value="/test/{greeting}") //public ModelAndView
+	 * test(@RequestParam("greeting")String greeting) { // it should be present
+	 * public ModelAndView test(@PathVariable(value="greeting",
+	 * required=false)String greeting) { if(greeting==null) {
+	 * greeting="hello there"; } ModelAndView mv=new ModelAndView("page");
+	 * mv.addObject("greeting",greeting); return mv; }
+	 */
 }
