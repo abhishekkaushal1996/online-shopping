@@ -26,12 +26,19 @@
 
 <script type="text/javascript">
 	window.menu = '${title}';
+	window.contextRoot='${contextRoot}'
 </script>
 <!-- Bootstrap core CSS -->
 <link href="${css}/bootstrap.min.css" rel="stylesheet">
 
 <!-- Bootstrap cearulean theme CSS -->
 <link href="${css}/cearulean-bootstrap-theme.css" rel="stylesheet">
+
+<!-- Bootstrap data tables CSS -->
+<link href="${css}/dataTables.bootstrap4.css" rel="stylesheet">
+
+<!-- Bootstrap data tables CSS -->
+<link href="${css}/web-fonts-with-css/css/fontawesome-all.css" rel="stylesheet">
 
 <!-- Custom styles for this template -->
 <link href="${css}/myapp.css" rel="stylesheet">
@@ -69,6 +76,11 @@
 			<c:if test="${userClickAllProducts == true or userClickCategoryProducts==true}">
 				<%@include file="listProducts.jsp"%>
 			</c:if>
+			
+			<!-- Load only when user click show products  clicked -->
+			<c:if test="${userClickShowProduct == true}">
+				<%@include file="singleProduct.jsp"%>
+			</c:if>
 
 		</div>
 		<!-- /.container -->
@@ -80,6 +92,13 @@
 		<!-- Bootstrap core JavaScript -->
 		<script src="${js}/jquery.js"></script>
 		<script src="${js}/bootstrap.bundle.min.js"></script>
+		
+		<!-- Data table plugin -->
+		<script src="${js}/jquery.dataTables.js"></script>
+		
+		<!-- Data table plugin -->
+		<script src="${js}/dataTables.bootstrap4.js"></script>
+		
 		<script src="${js}/myApp.js"></script>
 	</div>
 </body>

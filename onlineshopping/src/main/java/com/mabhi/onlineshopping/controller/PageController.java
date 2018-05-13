@@ -1,19 +1,28 @@
 package com.mabhi.onlineshopping.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mabhi.onlineshopping.exception.ProductNotFoundException;
 import com.mabhi.shoppingbackend.dao.CategoryDAO;
+import com.mabhi.shoppingbackend.dao.ProductDAO;
 import com.mabhi.shoppingbackend.dto.Category;
+import com.mabhi.shoppingbackend.dto.Product;
 
 @Controller
 public class PageController {
 
+	private static final Logger logger=LoggerFactory.getLogger(PageController.class);
 	@Autowired
 	private CategoryDAO categoryDAO;
+	
+	@Autowired
+	private ProductDAO productDAO;
 
 	@RequestMapping(value = { "/", "/index", "/home" })
 	public ModelAndView index() {
@@ -21,6 +30,9 @@ public class PageController {
 		ModelAndView mv = new ModelAndView("page");
 		mv.addObject("title", "home");
 		mv.addObject("userClickHome", true);
+		
+		logger.info("Inside page controller from index-INFO");
+		logger.debug("Inside page controller from index-DEBUG");
 		// passing the list of categories
 		mv.addObject("categories", categoryDAO.list());
 		return mv;
@@ -70,10 +82,26 @@ public class PageController {
 		mv.addObject("userClickCategoryProducts", true);
 		// passing the list of categories
 
-		// to fetc single category
+		// to fetch single category
 
 		mv.addObject("categories", categoryDAO.list());
 		mv.addObject("category", category);
+		return mv;
+	}
+	
+	@RequestMapping(value = "show/{id}/product")
+	public ModelAndView showSingleProducts(@PathVariable("id") int id) throws ProductNotFoundException {
+
+		ModelAndView mv = new ModelAndView("page");
+		Product product = productDAO.get(id);
+		
+		if(product==null) throw new ProductNotFoundException();
+		//update view counts 
+		product.setViews(product.getViews()+1);
+		productDAO.update(product);
+		mv.addObject("title",product.getName());
+		mv.addObject("product",product);
+		mv.addObject("userClickShowProduct",true);
 		return mv;
 	}
 
